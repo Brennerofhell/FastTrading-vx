@@ -22,7 +22,7 @@ public class PlayerInventoryUtil {
     }
 
     public static boolean playerHasStack(PlayerInventory playerInventory, ItemStack stack) {
-        return listContainsStack(playerInventory.main, stack);
+        return listContainsStack(playerInventory.getMainStacks(), stack);
     }
 
     public static boolean playerCanPerformTrade(PlayerInventory playerInventory, TradeOffer offer) {

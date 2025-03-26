@@ -1,6 +1,5 @@
 package io.bendy1234.fasttrading.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.bendy1234.fasttrading.FastTrading;
 import io.bendy1234.fasttrading.ModKeyBindings;
 import io.bendy1234.fasttrading.SpeedTradeTimer;
@@ -10,7 +9,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
@@ -92,9 +90,6 @@ public class SpeedTradeButton extends PressableWidget {
         if (checkPrimed()) {
             v = isHovered() ? 18 : 0;
         }
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         context.drawTexture(RenderLayer::getGuiTextured, BUTTON_LOCATION, getX(), getY(), 0, v, 20, 18, 20, 54);
         applyTooltip();
     }
