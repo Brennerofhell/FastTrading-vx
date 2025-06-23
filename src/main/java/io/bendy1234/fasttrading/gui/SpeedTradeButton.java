@@ -5,15 +5,17 @@ import io.bendy1234.fasttrading.ModKeyBindings;
 import io.bendy1234.fasttrading.SpeedTradeTimer;
 import io.bendy1234.fasttrading.duck.MerchantScreenHooks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
 import net.minecraft.village.TradeOffer;
 
 import java.util.ArrayList;
@@ -90,7 +92,7 @@ public class SpeedTradeButton extends PressableWidget {
         if (checkPrimed()) {
             v = isHovered() ? 18 : 0;
         }
-        context.drawTexture(RenderLayer::getGuiTextured, BUTTON_LOCATION, getX(), getY(), 0, v, 20, 18, 20, 54);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, BUTTON_LOCATION, getX(), getY(), 0, v, 20, 18, 20, 54);
         applyTooltip();
     }
 
@@ -158,8 +160,10 @@ public class SpeedTradeButton extends PressableWidget {
             textList.add(Text.empty().asOrderedText());
             appendTradeDescription(hooks.fasttrading$getCurrentTradeOffer(), textList);
         }
-
-        screen.setTooltip(textList);
+        var tt = Tooltip.of(null);
+        tt.lines = textList;
+        tt.language = Language.getInstance();
+        this.setTooltip(tt);
     }
 
     private void appendTradeDescription(TradeOffer offer, ArrayList<OrderedText> destList) {
