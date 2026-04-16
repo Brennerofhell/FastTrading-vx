@@ -6,7 +6,7 @@ import io.bendy1234.fasttrading.SpeedTradeTimer;
 import io.bendy1234.fasttrading.duck.MerchantScreenHooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -19,10 +19,10 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-//import net.minecraft.text.*;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -48,13 +48,14 @@ public class SpeedTradeButton extends AbstractButton {
         return active;
     }
 
-	@Override
-	public void onPress(InputWithModifiers input) {
-		if (checkPrimed()) {
-			phase = Phase.AUTOFILL;
-			SpeedTradeTimer.start();
-		}
-	}
+    @Override
+    public void onPress(InputWithModifiers input) {
+        if (checkPrimed()) {
+            phase = Phase.AUTOFILL;
+            SpeedTradeTimer.start();
+        }
+    }
+
     private boolean checkState() {
         if (hooks.fasttrading$computeState() != MerchantScreenHooks.State.CAN_PERFORM) {
             phase = Phase.INACTIVE;
@@ -81,8 +82,7 @@ public class SpeedTradeButton extends AbstractButton {
             if (phase == Phase.AUTOFILL) {
                 hooks.fasttrading$autofillSellSlots();
                 phase = Phase.TRADE;
-            }
-            else {
+            } else {
                 hooks.fasttrading$performTrade();
                 phase = Phase.AUTOFILL;
             }
@@ -91,12 +91,12 @@ public class SpeedTradeButton extends AbstractButton {
     }
 
     @Override
-    public void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractContents(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         int v = 36;
         if (checkPrimed()) {
             v = isHovered() ? 18 : 0;
         }
-        context.blit(RenderPipelines.GUI_TEXTURED, BUTTON_LOCATION, getX(), getY(), 0, v, 20, 18, 20, 54);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_LOCATION, getX(), getY(), 0, v, 20, 18, 20, 54);
         applyTooltip();
     }
 

@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -104,13 +104,13 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     public void fasttrading$performTrade() {
         Slot resultSlot = menu.getSlot(2);
         if (!resultSlot.getItem().isEmpty())
-            slotClicked(resultSlot, -1, 0, ClickType.QUICK_MOVE);
+            slotClicked(resultSlot, -1, 0, ContainerInput.QUICK_MOVE);
     }
 
     @Override
     public void fasttrading$clearSellSlots() {
-        slotClicked(null, 0, 0, ClickType.QUICK_MOVE);
-        slotClicked(null, 1, 0, ClickType.QUICK_MOVE);
+        slotClicked(null, 0, 0, ContainerInput.QUICK_MOVE);
+        slotClicked(null, 1, 0, ContainerInput.QUICK_MOVE);
     }
 
     @Override
@@ -130,11 +130,11 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
 
             count += invstack.getCount();
 
-            this.slotClicked(null, i, 0, ClickType.PICKUP);
-            this.slotClicked(null, slot, 0, ClickType.PICKUP);
+            this.slotClicked(null, i, 0, ContainerInput.PICKUP);
+            this.slotClicked(null, slot, 0, ContainerInput.PICKUP);
 
             if (count > menu.getSlot(slot).getItem().getMaxStackSize()) { // items still on the cursor
-                this.slotClicked(null, i, 0, ClickType.PICKUP);
+                this.slotClicked(null, i, 0, ContainerInput.PICKUP);
                 return;
             } else if (count == menu.getSlot(slot).getItem().getMaxStackSize()) {
                 return;

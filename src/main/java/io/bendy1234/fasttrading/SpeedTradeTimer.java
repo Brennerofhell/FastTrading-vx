@@ -4,8 +4,8 @@ import io.bendy1234.fasttrading.config.ModConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 public class SpeedTradeTimer {
-    private static boolean active;
     public static double counter;
+    private static boolean active;
 
     public static void start() {
         active = true;

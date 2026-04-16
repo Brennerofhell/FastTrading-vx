@@ -1,6 +1,6 @@
 package io.bendy1234.fasttrading;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 
 import static com.mojang.blaze3d.platform.InputConstants.KEY_LALT;
@@ -15,7 +15,7 @@ public class ModKeyBindings {
 
     public static void register() {
         for (KeyMapping keyBinding : all) {
-            KeyBindingHelper.registerKeyBinding(keyBinding);
+            KeyMappingHelper.registerKeyMapping(keyBinding);
         }
     }
 

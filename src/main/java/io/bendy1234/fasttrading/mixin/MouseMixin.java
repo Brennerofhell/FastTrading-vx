@@ -47,7 +47,7 @@ public abstract class MouseMixin {
             }
 
             KeyMapping targetBinding = null;
-			final MouseButtonEvent click = new MouseButtonEvent(0, 0, input);
+            final MouseButtonEvent click = new MouseButtonEvent(0, 0, input);
             for (KeyMapping keyBinding : ModKeyBindings.all) {
                 if (keyBinding.matchesMouse(click)) {
                     targetBinding = keyBinding;
