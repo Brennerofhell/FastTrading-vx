@@ -53,7 +53,7 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
 
     @Override
     public MerchantScreenHooks.State fasttrading$computeState() {
-        if (minecraft == null || minecraft.screen != this)
+        if (minecraft == null || minecraft.gui.screen() != this)
             return State.CLOSED;
         MerchantOffer offer = fasttrading$getCurrentTradeOffer();
         if (offer == null)

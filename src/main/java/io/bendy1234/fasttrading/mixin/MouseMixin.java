@@ -31,15 +31,15 @@ public abstract class MouseMixin {
     @Inject(method = "onButton", at = @At("HEAD"))
     public void updateModKeys(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
         // this forces our key bindings to be updated in screens
-        if (minecraft.screen != null && minecraft.getWindow().handle() == window) {
-            if (minecraft.screen instanceof HandledScreenAccessor handledScreen) {
+        if (minecraft.gui.screen() != null && minecraft.getWindow().handle() == window) {
+            if (minecraft.gui.screen() instanceof HandledScreenAccessor handledScreen) {
                 Slot focusedSlot = handledScreen.callGetHoveredSlot(xpos, ypos);
                 if (focusedSlot != null) {
                     // mouse is over a slot, don't update keys!
                     return;
                 }
             } else {
-                GuiEventListener hoveredElement = minecraft.screen.getChildAt(xpos, ypos).orElse(null);
+                GuiEventListener hoveredElement = minecraft.gui.screen().getChildAt(xpos, ypos).orElse(null);
                 if (hoveredElement instanceof AbstractWidget) {
                     // mouse is over something clickable, don't update keys!
                     return;

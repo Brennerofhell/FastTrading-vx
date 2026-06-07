@@ -25,8 +25,8 @@ public abstract class KeyboardMixin {
     public void updateModKeys(long window, int action, KeyEvent input, CallbackInfo ci) {
         // this forces our key bindings to be updated in screens
         // this allows scancodes to work properly, since you can't poll them via GLFW
-        if (minecraft.screen != null && minecraft.getWindow().handle() == window) {
-            if (minecraft.screen.getFocused() instanceof EditBox textFieldWidget) {
+        if (minecraft.gui.screen() != null && minecraft.getWindow().handle() == window) {
+            if (minecraft.gui.screen().getFocused() instanceof EditBox textFieldWidget) {
                 if (textFieldWidget.canConsumeInput()) {
                     // a text field widget is active, don't update keys!
                     return;
