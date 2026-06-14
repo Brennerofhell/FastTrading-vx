@@ -34,6 +34,7 @@ public class SpeedTradeButton extends AbstractButton {
     private static final Style STYLE_GRAY = Style.EMPTY.withColor(ChatFormatting.GRAY);
     private final MerchantScreenHooks hooks;
     private Phase phase;
+    private MerchantOffer actionTradeOffer;
 
     public SpeedTradeButton(int x, int y, MerchantScreenHooks hooks) {
         super(x, y, 18, 20, Component.empty());
@@ -52,12 +53,14 @@ public class SpeedTradeButton extends AbstractButton {
     public void onPress(InputWithModifiers input) {
         if (checkPrimed()) {
             phase = Phase.AUTOFILL;
+            actionTradeOffer = hooks.fasttrading$getCurrentTradeOffer();
             SpeedTradeTimer.start();
         }
     }
 
+    //checks if the player still has items to trade and if he didn't change trade
     private boolean checkState() {
-        if (hooks.fasttrading$computeState() != MerchantScreenHooks.State.CAN_PERFORM) {
+        if (hooks.fasttrading$computeState() != MerchantScreenHooks.State.CAN_PERFORM || actionTradeOffer != hooks.fasttrading$getCurrentTradeOffer()) {
             phase = Phase.INACTIVE;
             hooks.fasttrading$clearSellSlots();
             SpeedTradeTimer.stop();

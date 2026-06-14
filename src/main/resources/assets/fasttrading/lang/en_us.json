@@ -27,5 +27,7 @@
   "fasttrading.midnightconfig.tradeBlockBehavior.tooltip": "Controls when to not allow speed trading.",
   "fasttrading.midnightconfig.enum.TradeBlockBehavior.DAMAGEABLE": "Result is Damageable",
   "fasttrading.midnightconfig.enum.TradeBlockBehavior.UNSTACKABLE": "Result is Unstackable",
-  "fasttrading.midnightconfig.enum.TradeBlockBehavior.DISABLED": "Disabled"
+  "fasttrading.midnightconfig.enum.TradeBlockBehavior.DISABLED": "Disabled",
+  "fasttrading.midnightconfig.compareItemComponents": "Compare Item Components",
+  "fasttrading.midnightconfig.compareItemComponents.tooltip": "Compares items components (name, nbt...) when checking for similar items in the inventory.\nWhen disabled, it only compares the item type."
 }

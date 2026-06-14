@@ -1,5 +1,6 @@
 package io.bendy1234.fasttrading.util;
 
+import io.bendy1234.fasttrading.config.ModConfig;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -7,7 +8,10 @@ import net.minecraft.world.item.trading.MerchantOffer;
 
 public class PlayerInventoryUtil {
     public static boolean areItemsEqual(ItemStack a, ItemStack b) {
-        return ItemStack.isSameItemSameComponents(a, b);
+        if(ModConfig.compareItemComponents){
+            return ItemStack.isSameItemSameComponents(a, b);
+        }
+        return ItemStack.isSameItem(a, b);
     }
 
     public static boolean listContainsStack(NonNullList<ItemStack> list, ItemStack stack) {
