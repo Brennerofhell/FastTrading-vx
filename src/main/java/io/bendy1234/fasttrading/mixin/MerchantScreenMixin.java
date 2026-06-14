@@ -124,15 +124,8 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
         int count = 0;
         for (int i = 3; i < 39; i++) {
             ItemStack invstack = menu.getSlot(i).getItem();
-            if (ModConfig.compareItemComponents){
-                if (!ItemStack.isSameItemSameComponents(item, invstack)) {
-                    continue;
-                }
-            }
-            else{
-                if (!ItemStack.isSameItem(item, invstack)) {
-                    continue;
-                }
+            if (!ItemStack.isSameItemSameComponents(item, invstack)) {
+                continue;
             }
 
             count += invstack.getCount();
