@@ -5,6 +5,7 @@
   "fasttrading.tooltip.no_selection": "Select a trade!",
   "fasttrading.tooltip.out_of_stock": "Out of stock!",
   "fasttrading.tooltip.not_enough_buy_items": "Insufficient items for trade!",
+  "fasttrading.tooltip.strict_autofill_config_hint": "Items do not match exactly",
   "fasttrading.tooltip.no_room_for_sell_item": "No room for trade result!",
   "fasttrading.tooltip.blocked": "Blocked due to your configuration!",
   "fasttrading.tooltip.unblock_hint": "Hold %s to override block",

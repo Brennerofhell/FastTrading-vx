@@ -3,6 +3,8 @@ package io.bendy1234.fasttrading.gui;
 import io.bendy1234.fasttrading.FastTrading;
 import io.bendy1234.fasttrading.ModKeyBindings;
 import io.bendy1234.fasttrading.SpeedTradeTimer;
+import io.bendy1234.fasttrading.config.AutofillBehavior;
+import io.bendy1234.fasttrading.config.ModConfig;
 import io.bendy1234.fasttrading.duck.MerchantScreenHooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -163,6 +165,10 @@ public class SpeedTradeButton extends AbstractButton {
                         Component.translatable("fasttrading.tooltip." + state.name().toLowerCase(Locale.ROOT)).withStyle(
                                 style -> style.applyFormats(ChatFormatting.ITALIC, ChatFormatting.GRAY)
                         ).getVisualOrderText());
+                if (state == MerchantScreenHooks.State.NOT_ENOUGH_BUY_ITEMS && ModConfig.autofillBehavior == AutofillBehavior.STRICT) {
+                    textList.add(Component.translatable("fasttrading.tooltip.strict_autofill_config_hint").withStyle(
+                            style -> style.applyFormats(ChatFormatting.ITALIC, ChatFormatting.GRAY)).getVisualOrderText());
+                }
             }
             textList.add(Component.empty().getVisualOrderText());
             appendTradeDescription(hooks.fasttrading$getCurrentTradeOffer(), textList);

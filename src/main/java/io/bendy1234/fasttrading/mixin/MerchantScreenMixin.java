@@ -60,10 +60,9 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
             return State.NO_SELECTION;
         if (offer.isOutOfStock())
             return State.OUT_OF_STOCK;
-        ItemStack sellItem = offer.getResult();
-        if (!playerCanAcceptStack(playerInventory, sellItem))
+        if (!playerCanAcceptStack(playerInventory, offer.getResult()))
             return State.NO_ROOM_FOR_SELL_ITEM;
-        if (menu.getSlot(2).hasItem() || playerCanPerformTrade(playerInventory, offer))
+        if (playerCanPerformTrade(playerInventory, menu.getSlot(0).getItem(), menu.getSlot(1).getItem(), offer))
             return State.CAN_PERFORM;
         return State.NOT_ENOUGH_BUY_ITEMS;
     }
