@@ -5,6 +5,7 @@
   "fasttrading.tooltip.no_selection": "Выберите сделку!",
   "fasttrading.tooltip.out_of_stock": "Нет в наличии!",
   "fasttrading.tooltip.not_enough_buy_items": "Недостаточно предметов для торговли!",
+  "fasttrading.tooltip.strict_autofill_config_hint": "Предметы не совпадают",
   "fasttrading.tooltip.no_room_for_sell_item": "Нет места для результата торговли!",
   "fasttrading.tooltip.blocked": "Заблокировано из-за вашей конфигурации!",
   "fasttrading.tooltip.unblock_hint": "Держите %s, чтобы отменить блокировку",
@@ -27,5 +28,8 @@
   "fasttrading.midnightconfig.tradeBlockBehavior.tooltip": "Управляет, когда не разрешать ускоренную торговлю.",
   "fasttrading.midnightconfig.enum.TradeBlockBehavior.DAMAGEABLE": "Результат может быть повреждён",
   "fasttrading.midnightconfig.enum.TradeBlockBehavior.UNSTACKABLE": "Результат нельзя сложить",
-  "fasttrading.midnightconfig.enum.TradeBlockBehavior.DISABLED": "Отключено"
+  "fasttrading.midnightconfig.enum.TradeBlockBehavior.DISABLED": "Отключено",
+
+  "modmenu.summaryTranslation.fasttrading": "Добавляет в интерфейс торговли с жителями кнопку, позволяющую повторять текущую сделку до тех пор, пока она не станет недоступной (снова).",
+  "modmenu.descriptionTranslation.fasttrading": "Добавляет в интерфейс торговли с жителями кнопку, позволяющую повторять текущую сделку до тех пор, пока она не станет недоступной (снова)."
 }
