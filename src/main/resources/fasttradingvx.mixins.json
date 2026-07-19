@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.brennerofhell.fasttradingvx.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "HandledScreenAccessor",
+    "KeyBindingAccessor",
+    "KeyboardMixin",
+    "MerchantScreenMixin",
+    "MouseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

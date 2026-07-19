@@ -1,3 +1,0 @@
-accessWidener v2 official
-accessible field net/minecraft/client/gui/components/Tooltip cachedTooltip Ljava/util/List;
-accessible field net/minecraft/client/gui/components/Tooltip splitWithLanguage Lnet/minecraft/locale/Language;
