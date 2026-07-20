@@ -1,5 +1,8 @@
 # Fast Trading vX
 
+[![Download](https://img.shields.io/github/v/release/Brennerofhell/FastTrading-vx?include_prereleases&label=Download&style=for-the-badge)](https://github.com/Brennerofhell/FastTrading-vx/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
 Adds a button to the villager trading GUI to repeat the current trade until it's no longer available (again).
 
 This is a **NeoForge** mod (ported from the upstream Fabric mod, see credits below).
@@ -28,4 +31,4 @@ This mod can be configured in-game via the mod list's "Config" button, or by edi
 
 FastTrading-vx is a NeoForge port and continuation of [FastTrading](https://github.com/bendy1234/FastTrading) by bendy1234, which is itself an updated fork of [SpeedTrading](https://github.com/ModsByLeo/SpeedTrading) by ModsByLeo. Full credit for the original mod concept and the trading-GUI logic goes to ModsByLeo, ADudeCalledLeo, and bendy1234 — this fork's contribution is the NeoForge port and package rebrand.
 
-Licensed under MIT, same as upstream.
+Licensed under the [MIT License](LICENSE), same as upstream, with copyright retained for each contributor (ADudeCalledLeo, bendy1234, Brennerofhell) across the fork chain.
