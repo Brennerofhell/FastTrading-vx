@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT;
 import static io.brennerofhell.fasttradingvx.ModKeyBindings.keyOverrideBlock;
 
 public class SpeedTradeButton extends AbstractButton {
@@ -44,10 +46,35 @@ public class SpeedTradeButton extends AbstractButton {
         phase = Phase.INACTIVE;
     }
 
+    private int targetIndex() {
+        int pinned = hooks.fasttradingvx$getPinnedIndex();
+        return pinned >= 0 ? pinned : hooks.fasttradingvx$getSelectedIndex();
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (visible && event.button() == MOUSE_BUTTON_RIGHT && isCoordinateOverButton(event.x(), event.y())) {
+            hooks.fasttradingvx$togglePin();
+            return true;
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    private boolean isCoordinateOverButton(double mouseX, double mouseY) {
+        return mouseX >= getX() && mouseY >= getY() && mouseX < getRight() && mouseY < getBottom();
+    }
+
+    // True when there's no pin, or the pinned trade is the one currently selected/shown.
+    private boolean isTargetLive() {
+        int pinned = hooks.fasttradingvx$getPinnedIndex();
+        return pinned < 0 || pinned == hooks.fasttradingvx$getSelectedIndex();
+    }
+
     private boolean checkPrimed() {
+        int index = targetIndex();
         active = phase == Phase.INACTIVE
-                && hooks.fasttradingvx$computeState() == MerchantScreenHooks.State.CAN_PERFORM
-                && (ModKeyBindings.isDown(keyOverrideBlock) || !hooks.fasttradingvx$isCurrentTradeOfferBlocked());
+                && hooks.fasttradingvx$computeState(index) == MerchantScreenHooks.State.CAN_PERFORM
+                && (ModKeyBindings.isDown(keyOverrideBlock) || !hooks.fasttradingvx$isTradeOfferBlocked(index));
         return active;
     }
 
@@ -55,14 +82,17 @@ public class SpeedTradeButton extends AbstractButton {
     public void onPress(InputWithModifiers input) {
         if (checkPrimed()) {
             phase = Phase.AUTOFILL;
-            actionTradeOffer = hooks.fasttradingvx$getCurrentTradeOffer();
+            actionTradeOffer = hooks.fasttradingvx$getTradeOffer(targetIndex());
             SpeedTradeTimer.start();
         }
     }
 
-    //checks if the player still has items to trade and if he didn't change trade
+    //checks if the trade is still performable, and (unless pinned) that the player hasn't switched to another trade
     private boolean checkState() {
-        if (hooks.fasttradingvx$computeState() != MerchantScreenHooks.State.CAN_PERFORM || actionTradeOffer != hooks.fasttradingvx$getCurrentTradeOffer()) {
+        boolean pinned = hooks.fasttradingvx$getPinnedIndex() >= 0;
+        int index = targetIndex();
+        if (hooks.fasttradingvx$computeState(index) != MerchantScreenHooks.State.CAN_PERFORM
+                || (!pinned && actionTradeOffer != hooks.fasttradingvx$getTradeOffer(index))) {
             phase = Phase.INACTIVE;
             hooks.fasttradingvx$clearSellSlots();
             SpeedTradeTimer.stop();
@@ -78,6 +108,13 @@ public class SpeedTradeButton extends AbstractButton {
         }
         active = false;
 
+        if (!isTargetLive()) {
+            // Pinned trade isn't what's currently shown - freeze exactly as-is (no slot
+            // access, timer not consumed) so manual use of whatever the player IS looking
+            // at is completely untouched. Resumes on its own once they browse back.
+            return;
+        }
+
         while (SpeedTradeTimer.shouldDoAction()) {
             if (!checkState())
                 return;
@@ -85,7 +122,7 @@ public class SpeedTradeButton extends AbstractButton {
             SpeedTradeTimer.onDoAction();
 
             if (phase == Phase.AUTOFILL) {
-                hooks.fasttradingvx$autofillSellSlots();
+                hooks.fasttradingvx$autofillSellSlots(targetIndex());
                 phase = Phase.TRADE;
             } else {
                 hooks.fasttradingvx$performTrade();
@@ -118,15 +155,23 @@ public class SpeedTradeButton extends AbstractButton {
             return;
         }
 
+        int index = targetIndex();
+        boolean pinned = hooks.fasttradingvx$getPinnedIndex() >= 0;
+
         ArrayList<FormattedCharSequence> textList = new ArrayList<>();
         if (phase != Phase.INACTIVE) {
             textList.add(Component.translatable("fasttradingvx.tooltip.in_progress").withStyle(
                     style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.ITALIC, ChatFormatting.DARK_GREEN)
             ).getVisualOrderText());
+            if (pinned) {
+                textList.add(Component.translatable(isTargetLive() ? "fasttradingvx.tooltip.pinned" : "fasttradingvx.tooltip.pinned_paused").withStyle(
+                        style -> style.applyFormats(ChatFormatting.ITALIC, ChatFormatting.GRAY)
+                ).getVisualOrderText());
+            }
         } else {
-            MerchantScreenHooks.State state = hooks.fasttradingvx$computeState();
+            MerchantScreenHooks.State state = hooks.fasttradingvx$computeState(index);
             if (state == MerchantScreenHooks.State.CAN_PERFORM) {
-                boolean isBlocked = hooks.fasttradingvx$isCurrentTradeOfferBlocked();
+                boolean isBlocked = hooks.fasttradingvx$isTradeOfferBlocked(index);
                 boolean isOverriden = ModKeyBindings.isDown(keyOverrideBlock);
                 if (isBlocked && !isOverriden) {
                     textList.add(Component.translatable("fasttradingvx.tooltip.cannot_perform").withStyle(
@@ -170,8 +215,17 @@ public class SpeedTradeButton extends AbstractButton {
                             style -> style.applyFormats(ChatFormatting.ITALIC, ChatFormatting.GRAY)).getVisualOrderText());
                 }
             }
+            if (pinned) {
+                textList.add(Component.translatable("fasttradingvx.tooltip.pinned").withStyle(
+                        style -> style.applyFormats(ChatFormatting.ITALIC, ChatFormatting.GRAY)).getVisualOrderText());
+                textList.add(Component.translatable("fasttradingvx.tooltip.unpin_hint").withStyle(
+                        style -> style.withColor(ChatFormatting.GRAY)).getVisualOrderText());
+            } else {
+                textList.add(Component.translatable("fasttradingvx.tooltip.pin_hint").withStyle(
+                        style -> style.withColor(ChatFormatting.GRAY)).getVisualOrderText());
+            }
             textList.add(Component.empty().getVisualOrderText());
-            appendTradeDescription(hooks.fasttradingvx$getCurrentTradeOffer(), textList);
+            appendTradeDescription(hooks.fasttradingvx$getTradeOffer(index), textList);
         }
         var tt = Tooltip.create(null);
         tt.cachedTooltip = textList;
@@ -218,7 +272,7 @@ public class SpeedTradeButton extends AbstractButton {
     }
 
     private MutableComponent getItemStackName(ItemStack stack) {
-        return ComponentUtils.wrapInSquareBrackets(Component.literal("").append(stack.getHoverName()).withStyle(style -> style.applyFormat(stack.getRarity().color())));
+        return ComponentUtils.wrapInSquareBrackets(Component.literal("").append(stack.getHoverName()).withStyle(stack.getRarity().getStyleModifier()));
     }
 
     public enum Phase {

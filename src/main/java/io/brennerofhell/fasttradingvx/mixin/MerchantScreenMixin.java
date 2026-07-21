@@ -31,6 +31,10 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     private Inventory playerInventory;
     @Unique
     private SpeedTradeButton speedTradeButton;
+    @Unique
+    private int pinnedIndex = -1;
+    @Unique
+    private MerchantOffer pinnedOfferSnapshot;
 
     @SuppressWarnings("DataFlowIssue")
     public MerchantScreenMixin() {
@@ -52,10 +56,38 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     }
 
     @Override
-    public MerchantScreenHooks.State fasttradingvx$computeState() {
+    public int fasttradingvx$getSelectedIndex() {
+        return shopItem;
+    }
+
+    @Override
+    public int fasttradingvx$getPinnedIndex() {
+        if (pinnedIndex >= 0 && fasttradingvx$getTradeOffer(pinnedIndex) != pinnedOfferSnapshot) {
+            pinnedIndex = -1;
+            pinnedOfferSnapshot = null;
+        }
+        return pinnedIndex;
+    }
+
+    @Override
+    public void fasttradingvx$togglePin() {
+        if (fasttradingvx$getPinnedIndex() >= 0) {
+            pinnedIndex = -1;
+            pinnedOfferSnapshot = null;
+        } else {
+            MerchantOffer current = fasttradingvx$getTradeOffer(shopItem);
+            if (current != null) {
+                pinnedIndex = shopItem;
+                pinnedOfferSnapshot = current;
+            }
+        }
+    }
+
+    @Override
+    public MerchantScreenHooks.State fasttradingvx$computeState(int index) {
         if (minecraft == null || minecraft.gui.screen() != this)
             return State.CLOSED;
-        MerchantOffer offer = fasttradingvx$getCurrentTradeOffer();
+        MerchantOffer offer = fasttradingvx$getTradeOffer(index);
         if (offer == null)
             return State.NO_SELECTION;
         if (offer.isOutOfStock())
@@ -68,28 +100,31 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     }
 
     @Override
-    public MerchantOffer fasttradingvx$getCurrentTradeOffer() {
+    public MerchantOffer fasttradingvx$getTradeOffer(int index) {
         MerchantOffers tradeOffers = menu.getOffers();
-        if (shopItem < 0 || shopItem >= tradeOffers.size())
+        if (index < 0 || index >= tradeOffers.size())
             return null;
-        return tradeOffers.get(shopItem);
+        return tradeOffers.get(index);
     }
 
     @Override
-    public boolean fasttradingvx$isCurrentTradeOfferBlocked() {
-        MerchantOffer offer = fasttradingvx$getCurrentTradeOffer();
+    public boolean fasttradingvx$isTradeOfferBlocked(int index) {
+        MerchantOffer offer = fasttradingvx$getTradeOffer(index);
         if (offer == null)
             return false;
         return ModConfig.tradeBlockBehavior.isBlocked(offer.getResult());
     }
 
     @Override
-    public void fasttradingvx$autofillSellSlots() {
+    public void fasttradingvx$autofillSellSlots(int index) {
+        // Callers only ever invoke this when `index` already equals the live `shopItem`
+        // (SpeedTradeButton.tick() only acts while the pinned/target trade is the one
+        // currently selected), so postButtonClick() reading shopItem directly is correct.
         switch (ModConfig.autofillBehavior) {
             case DEFAULT -> postButtonClick();
             case STRICT -> {
                 fasttradingvx$clearSellSlots();
-                MerchantOffer recipe = menu.getOffers().get(shopItem);
+                MerchantOffer recipe = menu.getOffers().get(index);
 
                 fillSlot(0, recipe.getItemCostA().itemStack());
                 if (recipe.getItemCostB().isPresent()) {

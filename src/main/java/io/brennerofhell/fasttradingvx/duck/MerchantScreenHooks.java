@@ -3,13 +3,19 @@ package io.brennerofhell.fasttradingvx.duck;
 import net.minecraft.world.item.trading.MerchantOffer;
 
 public interface MerchantScreenHooks {
-    State fasttradingvx$computeState();
+    int fasttradingvx$getSelectedIndex();
 
-    MerchantOffer fasttradingvx$getCurrentTradeOffer();
+    int fasttradingvx$getPinnedIndex();
 
-    boolean fasttradingvx$isCurrentTradeOfferBlocked();
+    void fasttradingvx$togglePin();
 
-    void fasttradingvx$autofillSellSlots();
+    State fasttradingvx$computeState(int index);
+
+    MerchantOffer fasttradingvx$getTradeOffer(int index);
+
+    boolean fasttradingvx$isTradeOfferBlocked(int index);
+
+    void fasttradingvx$autofillSellSlots(int index);
 
     void fasttradingvx$performTrade();
 
